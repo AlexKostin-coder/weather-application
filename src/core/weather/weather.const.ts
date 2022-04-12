@@ -1,0 +1,1 @@
+export const GET_WEATHER_CITY = 'GET_WEATHER_CITY';
