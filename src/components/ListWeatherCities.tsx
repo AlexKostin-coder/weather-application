@@ -6,29 +6,40 @@ import {
 } from 'react';
 import {
   useDispatch,
-  useSelector
 } from 'react-redux';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 
-import { getWeatherCityShort } from '../core/weather/weather.actions';
-import { weatherShortSelector } from '../core/weather/weather.selectors';
+import {
+  getCurrentWeatherInCityByName,
+  removeCity
+} from '../core/weather/weather.actions';
+import { useTypedSelector } from '../core/redux/hooks';
+import { currentWeatherSelector } from '../core/weather/weather.selectors';
+import { setProgress } from '../core/progress/progress.actions';
 
 import CardCity from './CardCity';
+import { WeatherActionTypes } from '../core/weather/weather.const';
 
 const ListWeatherCities: FC = () => {
   const dispatch = useDispatch();
-  const weatherShort = useSelector(weatherShortSelector);
-  const [citiesName, setCitiesName] = useState(['London', 'Lityn', 'New York', 'Kalynivka']);
+  const weatherShort = useTypedSelector(currentWeatherSelector);
   const [cityName, setCityName] = useState('');
 
   const getAllDataWeatherCities = async () => {
     try {
-      citiesName.map((name) => {
-        dispatch(getWeatherCityShort(name));
-      });
+      const cities = localStorage.getItem('cities');
+      if (!cities) {
+        return;
+      }
+      const a = [];
+      cities
+        .split(",")
+        .map((name) => {
+          dispatch(getCurrentWeatherInCityByName(name));
+        });
     } catch (err) {
       console.log('getAllDataWeatherCities', err);
     }
@@ -43,9 +54,26 @@ const ListWeatherCities: FC = () => {
     setCityName(value);
   }
 
+  const handleWeatherCity = async (name: string) => {
+    try {
+      dispatch(setProgress(true, WeatherActionTypes.GET_CURRENT_WEATHER));
+      await dispatch(getCurrentWeatherInCityByName(name));
+      dispatch(setProgress(false, WeatherActionTypes.GET_CURRENT_WEATHER));
+    } catch (err) {
+      console.log('handleSearchCity', err);
+    }
+  }
+
   const handleSearchCity = async () => {
     try {
-      await dispatch(getWeatherCityShort(cityName));
+      await dispatch(getCurrentWeatherInCityByName(cityName));
+      const cities = localStorage.getItem('cities');
+      if (!cities) {
+        return localStorage.setItem('cities', cityName);
+      }
+      const citiesName = [cities, cityName];
+      localStorage.setItem('cities', citiesName.join(","));
+      setCityName('');
     } catch (err) {
       console.log('handleSearchCity', err);
     }
@@ -53,16 +81,24 @@ const ListWeatherCities: FC = () => {
 
   return (
     <>
-      <Input
-        placeholder="Name city"
-        value={cityName}
-        onChange={handleChangeCityName}
-      />
-      <Button
-        disabled={!cityName.length}
-        variant="contained"
-        onClick={handleSearchCity}
-      >Search</Button>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Input
+          placeholder="Name city"
+          value={cityName}
+          onChange={handleChangeCityName}
+        />
+        <Button
+          disabled={!cityName.length}
+          variant="text"
+          onClick={handleSearchCity}
+        >Search</Button>
+      </Box>
       <Box sx={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -78,7 +114,8 @@ const ListWeatherCities: FC = () => {
               sys,
               main,
               wind,
-              weather
+              weather,
+              coord
             } = weatherShort[cityId];
             return (
               <CardCity
@@ -90,6 +127,9 @@ const ListWeatherCities: FC = () => {
                 speedWind={wind.speed}
                 weatherInfo={weather[0].main}
                 iconId={weather[0].icon}
+                coord={coord}
+                onRefresh={() => { handleWeatherCity(name) }}
+                onRemove={() => { dispatch(removeCity(id, name)) }}
               />
             )
           })

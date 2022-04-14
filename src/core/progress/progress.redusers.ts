@@ -1,9 +1,13 @@
-import { SET_PROGRESS } from "./progress.const";
+import {
+  UIActionTypes,
+  initialUIState,
+} from "./progress.const";
 import { omit } from "../tools";
+import { UIActions } from './progress.types';
 
-export const progress = (state = { elementsProgress: {} }, action: any) => {
+export const progress = (state = initialUIState, action: UIActions) => {
   switch (action.type) {
-    case SET_PROGRESS: {
+    case UIActionTypes.SET_PROGRESS: {
       return {
         ...state,
         elementsProgress: action.payload.identifier

@@ -1,44 +1,64 @@
+import { RootState } from './../redux/reducers';
+import { Dispatch } from "redux";
 import { API_KEY } from "../environment";
-import { setProgress } from "../progress/progress.actions";
+import { WeatherActionTypes } from './weather.const';
 import {
-  GET_WEATHER_CITY,
-  GET_WEATHER_CITY_SHORT
-} from "./weather.const";
+  GetCurrentWeatherInCityByName,
+  GetForecastWeatherCity
+} from './weather.types';
 
-export const getWeatherCityShort = (city: string = "") => async (dispatch: any, getState: any, api: any) => {
+export const getCurrentWeatherInCityByName = (cityName: string) => async (dispatch: Dispatch<GetCurrentWeatherInCityByName>, getState: RootState, api: any) => {
   try {
-    if (!city) {
-      throw new Error('Назва міста відсутня!')
-    }
-    dispatch(setProgress(true, GET_WEATHER_CITY_SHORT));
-    const res = await api('GET', `/weather?q=${city}&units=metric&lang=ua&appid=${API_KEY}`);
-    dispatch({
-      type: GET_WEATHER_CITY_SHORT,
+    const res = await api('GET', `weather?q=${cityName}&units=metric&lang=ua&appid=${API_KEY}`);
+    return dispatch({
+      type: WeatherActionTypes.GET_CURRENT_WEATHER,
       payload: {
         [res.data.id]: { ...res.data }
       },
     });
-    dispatch(setProgress(false, GET_WEATHER_CITY_SHORT));
   } catch (err) {
-    console.log('getWeatherCityShort', err);
+    console.log('getCurrentWeatherInCityByName', err);
+    throw new Error('Помилка пошуку');
   }
 };
 
-export const getWeatherCity = (city: string = "") => async (dispatch: any, getState: any, api: any) => {
+export const getCurrentWeatherInCityByCityId = (cityId: number) => async (dispatch: Dispatch<GetCurrentWeatherInCityByName>, getState: RootState, api: any) => {
   try {
-    if (!city) {
-      throw new Error('Назва міста відсутня!')
-    }
-    dispatch(setProgress(true, GET_WEATHER_CITY));
-    const res = await api('GET', `/daily?q=${city}&units=metric&lang=ua&appid=${API_KEY}`);
-    dispatch({
-      type: GET_WEATHER_CITY,
+    const res = await api('GET', `weather?id=${cityId}&units=metric&lang=ua&appid=${API_KEY}`);
+    return dispatch({
+      type: WeatherActionTypes.GET_CURRENT_WEATHER,
       payload: {
         [res.data.id]: { ...res.data }
       },
     });
-    dispatch(setProgress(false, GET_WEATHER_CITY));
+  } catch (err) {
+    console.log('getCurrentWeatherInCityByName', err);
+    throw new Error('Помилка пошуку');
+  }
+};
+
+export const getForecastWeatherCity = ({ lon, lat }: { lon: string, lat: string }) => async (dispatch: Dispatch<GetForecastWeatherCity>, getState: RootState, api: any) => {
+  try {
+    const res = await api('GET', `onecall?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`);
+    return dispatch({
+      type: WeatherActionTypes.GET_WEATHER_CITY,
+      payload: { ...res.data },
+    });
   } catch (err) {
     console.log('getWeatherCity', err);
+  }
+}
+
+export const removeCity = (id: number, name: string) => {
+  const cities = localStorage.getItem('cities');
+  const newCities = cities
+    .split(",")
+    .filter(cityName => name !== cityName)
+    .join(",");
+
+  localStorage.setItem('cities', newCities);
+  return {
+    type: WeatherActionTypes.REMOVE_CITY,
+    payload: { id },
   }
 }

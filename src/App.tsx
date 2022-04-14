@@ -15,8 +15,8 @@ const App = () => {
       <Container>
         <Router>
           <Routes>
-            <Route path="/weather-application/" element={<ListWeatherCities />} />
-            <Route path="/weather-detail/:cityId" element={<DetailWeatherCity />} />
+            <Route path="weather-application" element={<ListWeatherCities />} />
+            <Route path="weather-application/:cityId" element={<DetailWeatherCity />} />
           </Routes>
         </Router>
       </Container>

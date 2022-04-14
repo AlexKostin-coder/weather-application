@@ -1,8 +1,9 @@
-import { SET_PROGRESS } from "./progress.const";
+import { UIActionTypes } from "./progress.const";
+import { SetProgressAction } from "./progress.types";
 
-export const setProgress = (progress: boolean, identifier: string = ""): any => {
+export const setProgress = (progress: boolean, identifier: string = ""): SetProgressAction => {
   return {
-    type: SET_PROGRESS,
+    type: UIActionTypes.SET_PROGRESS,
     payload: {
       progress,
       identifier,
