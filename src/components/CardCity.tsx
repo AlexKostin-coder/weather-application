@@ -1,6 +1,7 @@
 import {
   FC,
-  useState
+  useState,
+  MouseEvent
 } from 'react';
 
 import { useSelector } from 'react-redux';
@@ -49,7 +50,7 @@ const CardCity: FC<CardCityProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -59,14 +60,13 @@ const CardCity: FC<CardCityProps> = (props) => {
   return (
     <Link to={`/weather-detail/${id}`}>
       <Card sx={{
-        p: 1,
-        mx: 1,
-        maxWidth: 350,
+        width: 350,
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
         position: 'relative',
+        mr: 1,
+        mb: 1,
       }}>
         {
           !progress.elementsProgress[GET_WEATHER_CITY_SHORT] ? (
