@@ -2,6 +2,8 @@ import {
   FC,
   useState
 } from 'react';
+
+import { useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 
 import Card from '@mui/material/Card';
@@ -17,27 +19,33 @@ import MenuItem from '@mui/material/MenuItem';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const CardCity: FC = () => {
+import { progressSelector } from '../core/progress/progress.selectors';
+import { GET_WEATHER_CITY_SHORT } from '../core/weather/weather.const';
 
-  const [weatherData, setWeatherData] = useState({
-    name: "",
-    weather: [
-      {
-        main: "",
-        icon: "",
-      }
-    ],
-    main: {
-      temp: 0,
-    },
-    sys: {
-      country: ''
-    },
-    wind: {
-      speed: 0,
-    }
-  });
 
+interface CardCityProps {
+  id: number,
+  name: string,
+  country: string,
+  temperature: number,
+  speedWind: number,
+  weatherInfo: string,
+  iconId: string,
+}
+
+const CardCity: FC<CardCityProps> = (props) => {
+
+  const {
+    id,
+    name,
+    country,
+    temperature,
+    speedWind,
+    weatherInfo,
+    iconId,
+  } = props;
+
+  const progress = useSelector(progressSelector);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -49,9 +57,10 @@ const CardCity: FC = () => {
   };
 
   return (
-    <Link to="/">
+    <Link to={`/weather-detail/${id}`}>
       <Card sx={{
         p: 1,
+        mx: 1,
         maxWidth: 350,
         display: 'flex',
         justifyContent: 'center',
@@ -60,7 +69,7 @@ const CardCity: FC = () => {
         position: 'relative',
       }}>
         {
-          weatherData.name ? (
+          !progress.elementsProgress[GET_WEATHER_CITY_SHORT] ? (
             <>
               <CardContent>
                 <Typography
@@ -72,20 +81,20 @@ const CardCity: FC = () => {
                     overflow: 'hidden'
                   }}
                 >
-                  {weatherData.name}, {weatherData.sys.country}
+                  {name}, {country}
                 </Typography>
                 <Typography
                   gutterBottom
                   variant="h4"
                   component="div"
                 >
-                  {Math.floor(weatherData.main.temp)} °C
+                  {Math.floor(temperature)} °C
                 </Typography>
                 <Typography
                   variant="body2"
                   color="text.secondary"
                 >
-                  {weatherData.weather[0].main}
+                  {weatherInfo}
                 </Typography>
                 <Typography
                   sx={{
@@ -96,7 +105,7 @@ const CardCity: FC = () => {
                   color="text.secondary"
                 >
                   <AirIcon sx={{ mr: .5, }} />
-                  {weatherData.wind.speed} м/с
+                  {speedWind} м/с
                 </Typography>
               </CardContent>
               <CardMedia
@@ -106,7 +115,7 @@ const CardCity: FC = () => {
                   height: 160,
                   objectFit: 'cover'
                 }}
-                image={`http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`}
+                image={`http://openweathermap.org/img/w/${iconId}.png`}
                 alt="icon"
               />
               <IconButton

@@ -10,14 +10,13 @@ import ListWeatherCities from './components/ListWeatherCities';
 import DetailWeatherCity from './components/DetailWeatherCity';
 
 const App = () => {
-
   return (
     <Provider store={store}>
       <Container>
         <Router>
           <Routes>
-            <Route path="/weather-application" element={<ListWeatherCities />} />
-            <Route path="/weather-application/weather-detail/:cityId" element={<DetailWeatherCity />} />
+            <Route path="/weather-application/" element={<ListWeatherCities />} />
+            <Route path="/weather-detail/:cityId" element={<DetailWeatherCity />} />
           </Routes>
         </Router>
       </Container>

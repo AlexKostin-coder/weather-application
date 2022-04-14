@@ -1,19 +1,71 @@
 import {
   FC,
-  useEffect
+  useEffect,
+  useState
 } from 'react';
-import { useDispatch } from 'react-redux';
-import { getWeatherCity } from '../core/weather/weather.actions';
+import {
+  useDispatch,
+  useSelector
+} from 'react-redux';
+
+import Box from '@mui/material/Box';
+
+import { getWeatherCityShort } from '../core/weather/weather.actions';
+import { weatherShortSelector } from '../core/weather/weather.selectors';
+
+import CardCity from './CardCity';
 
 const ListWeatherCities: FC = () => {
   const dispatch = useDispatch();
+  const weatherShort = useSelector(weatherShortSelector);
+  const [citiesName, setCitiesName] = useState(['London', 'Lityn']);
+
+  const getAllDataWeatherCities = async () => {
+    try {
+      citiesName.map((name) => {
+        dispatch(getWeatherCityShort(name));
+      });
+    } catch (err) {
+      console.log('getAllDataWeatherCities', err);
+    }
+  }
 
   useEffect(() => {
-    dispatch(getWeatherCity("London"));
+    getAllDataWeatherCities();
+    // dispatch(getWeatherCityShort("London"));
   }, []);
 
   return (
-    <div>123</div>
+    <Box sx={{
+      display: 'flex',
+      flexWrap: 'wrap',
+    }}
+    >
+      {
+        Object.keys(weatherShort).map((cityId) => {
+          const {
+            id,
+            name,
+            sys,
+            main,
+            wind,
+            weather
+          } = weatherShort[cityId];
+          return (
+            <CardCity
+              key={cityId}
+              id={id}
+              name={name}
+              country={sys.country}
+              temperature={main.temp}
+              speedWind={wind.speed}
+              weatherInfo={weather[0].main}
+              iconId={weather[0].icon}
+            />
+          )
+        })
+      }
+    </Box>
   );
 }
 

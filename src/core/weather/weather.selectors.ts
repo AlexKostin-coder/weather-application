@@ -1,0 +1,1 @@
+export const weatherShortSelector = (state: any) => state.weather_short;
