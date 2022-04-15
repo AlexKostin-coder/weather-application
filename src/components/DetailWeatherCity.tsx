@@ -27,6 +27,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CardMedia from '@mui/material/CardMedia';
+import Stack from '@mui/material/Stack';
 
 
 const DetailWeatherCity: FC = () => {
@@ -47,16 +48,14 @@ const DetailWeatherCity: FC = () => {
   }, []);
 
   return (
-    <Card >
-      <CardContent>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center'
-          }}
-        >
-          <div>
+    <>
+      <Card>
+        <CardContent sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end'
+        }}>
+          <Box>
             <Typography
               variant="h5"
             >
@@ -86,55 +85,81 @@ const DetailWeatherCity: FC = () => {
                 alt="icon"
               />
             }
-            <Typography
-              sx={{
-                fontSize: 24,
-              }}
-            >
+            <Typography sx={{ fontSize: 24 }}>
               {forecastWeather.current?.temp} °C
             </Typography>
             <Typography>
               {forecastWeather.current?.weather[0].main}
             </Typography>
-          </div>
-          {
-            forecastWeather.daily?.map((item) => {
-              return (
-                <Card
-                  key={item.dt}
-                  sx={{ m: .4, textAlign: 'center' }}
-                >
-                  {
-                    item?.weather[0].icon &&
-                    <CardMedia
-                      component="img"
-                      sx={{
-                        width: 60,
-                        height: 60,
-                        m: 'auto',
-                      }}
-                      image={`http://openweathermap.org/img/w/${item?.weather[0].icon}.png`}
-                      alt="icon"
-                    />
-                  }
-                  <CardContent sx={{
-                    py: 0,
-                    px: 1
-                  }}>
-                    <Typography sx={{ fontSize: 14 }}>
-                      {getNameDay(item.dt, { shortDate: true })}
-                    </Typography>
-                    <Typography sx={{ fontSize: 14 }}>
-                      {item.temp.day} °C
-                    </Typography>
-                  </CardContent>
-                </Card>
-              )
-            })
-          }
-        </Box>
-      </CardContent>
-    </Card>
+          </Box>
+          <Stack
+            direction="row"
+            spacing={1}
+          >
+            {
+              forecastWeather.daily?.map((item) => {
+                return (
+                  <Card
+                    key={item.dt}
+                    sx={{ textAlign: 'center', p: 0, m: 0 }}
+                  >
+                    {
+                      item?.weather[0].icon &&
+                      <CardMedia
+                        component="img"
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          m: 'auto',
+                        }}
+                        image={`http://openweathermap.org/img/w/${item?.weather[0].icon}.png`}
+                        alt="icon"
+                      />
+                    }
+                    <CardContent sx={{ px: 1, py: 0 }}>
+                      <Typography sx={{ fontSize: 16 }}>
+                        {getNameDay(item.dt, { shortDate: true })}
+                      </Typography>
+                      <Typography sx={{ fontSize: 18, p: 0, m: 0 }}>
+                        {item.temp.day} °C
+                      </Typography>
+                      <Typography sx={{ fontSize: 12 }}>
+                        {item.temp.min} / {item.temp.max}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                )
+              })
+            }
+          </Stack>
+        </CardContent>
+      </Card>
+      <Stack
+        direction="row"
+        spacing={.1}
+        sx={{
+          position: "relative",
+          justifyContent: 'center',
+        }}
+      >
+        {
+          forecastWeather.hourly?.filter((item, index) => index < 16).map((item) => {
+            return (
+              <Box sx={{
+                backgroundColor: '#c1c1c1',
+                px: 2,
+                // position: 'absolute',
+                top: Math.floor(item.temp),
+              }}>
+                <Typography fontSize={12}>
+                  {Math.floor(item.temp)}
+                </Typography>
+              </Box>
+            )
+          })
+        }
+      </Stack>
+    </>
   );
 }
 
