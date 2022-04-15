@@ -1,5 +1,30 @@
 import { WeatherActionTypes } from './weather.const';
 
+export interface ForecastWeather {
+  current: {
+    dt: number,
+    weather: Array<{
+      icon: string,
+      main: string
+    }>,
+    temp: number,
+  },
+  daily: Array<{
+    dt: number,
+    weather: Array<{
+      icon: string,
+      main: string
+    }>,
+    temp: {
+      day: number,
+      min: number,
+      max: number,
+    }
+  }>,
+  hourly: Array<{
+    temp: number,
+  }>
+}
 export interface GetCurrentWeatherInCityByName {
   type: WeatherActionTypes.GET_CURRENT_WEATHER,
   payload: {

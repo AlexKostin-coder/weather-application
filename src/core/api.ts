@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
 
 const instance = axios.create({
   baseURL: 'https://api.openweathermap.org/data/2.5/',
@@ -6,11 +7,21 @@ const instance = axios.create({
 });
 
 const api = async (method: 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH', url: string) => {
-  const res = await instance({
-    method,
-    url,
-  });
-  return res;
+  try {
+    const res = await instance({
+      method,
+      url,
+    });
+    return res;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      const serverError = err as AxiosError<any>;
+      if (serverError && serverError.response) {
+        return serverError.response.data;
+      }
+    }
+    return { error: "something went wrong!" };
+  }
 }
 
 export default api;

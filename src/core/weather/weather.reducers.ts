@@ -1,14 +1,15 @@
 import {
   WeatherActionTypes,
-  initialWeatherShortState,
-  initialWeatherState,
+  initialWeatherCurrentState,
+  initialForecastWeatherState,
 } from './weather.const';
 import {
   WeatherShortActions,
   WeatherActions,
+  ForecastWeather
 } from './weather.types';
 
-export const current_weather = (state = initialWeatherShortState, action: WeatherShortActions) => {
+export const current_weather = (state = initialWeatherCurrentState, action: WeatherShortActions) => {
   switch (action.type) {
     case WeatherActionTypes.GET_CURRENT_WEATHER: {
       return {
@@ -31,7 +32,7 @@ export const current_weather = (state = initialWeatherShortState, action: Weathe
   }
 }
 
-export const forecast_weather = (state = initialWeatherState, action: WeatherActions) => {
+export const forecast_weather = (state = initialForecastWeatherState, action: WeatherActions): ForecastWeather => {
   switch (action.type) {
     case WeatherActionTypes.GET_WEATHER_CITY: {
       return {

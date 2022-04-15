@@ -34,7 +34,6 @@ const ListWeatherCities: FC = () => {
       if (!cities) {
         return;
       }
-      const a = [];
       cities
         .split(",")
         .map((name) => {

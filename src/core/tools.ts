@@ -1,4 +1,4 @@
-export const omit = (obj: any, key: any) => {
+export const omit = (obj: any, key: string) => {
   const copy = { ...obj };
   [].concat(key).forEach(k => {
     delete copy[k];
@@ -41,14 +41,14 @@ const monthNames = [
   "December"
 ];
 
-export const getNameDay = (date: number, { shortDate = false }: { shortDate?: boolean }) => {
+export const getNameDay = (date: number, { shortDate = false }: { shortDate?: boolean }): string => {
   const dt = new Date(date * 1000);
   const day = dt.getDate();
   const numDay = dt.getDay();
   return shortDate ? nameDayShort[numDay] : nameDay[numDay];
 }
 
-export const getNameMonth = (date: number) => {
+export const getNameMonth = (date: number): string => {
   const dt = new Date(date * 1000);
   const day = dt.getDate();
   const numMonth = dt.getMonth();

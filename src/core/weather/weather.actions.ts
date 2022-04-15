@@ -1,5 +1,6 @@
-import { RootState } from './../redux/reducers';
 import { Dispatch } from "redux";
+
+import { RootState } from './../redux/reducers';
 import { API_KEY } from "../environment";
 import { WeatherActionTypes } from './weather.const';
 import {
@@ -7,7 +8,11 @@ import {
   GetForecastWeatherCity
 } from './weather.types';
 
-export const getCurrentWeatherInCityByName = (cityName: string) => async (dispatch: Dispatch<GetCurrentWeatherInCityByName>, getState: RootState, api: any) => {
+export const getCurrentWeatherInCityByName = (cityName: string) => async (
+  dispatch: Dispatch<GetCurrentWeatherInCityByName>,
+  getState: RootState,
+  api: any
+) => {
   try {
     const res = await api('GET', `weather?q=${cityName}&units=metric&lang=ua&appid=${API_KEY}`);
     return dispatch({
@@ -22,7 +27,11 @@ export const getCurrentWeatherInCityByName = (cityName: string) => async (dispat
   }
 };
 
-export const getCurrentWeatherInCityByCityId = (cityId: number) => async (dispatch: Dispatch<GetCurrentWeatherInCityByName>, getState: RootState, api: any) => {
+export const getCurrentWeatherInCityByCityId = (cityId: number) => async (
+  dispatch: Dispatch<GetCurrentWeatherInCityByName>,
+  getState: RootState,
+  api: any
+) => {
   try {
     const res = await api('GET', `weather?id=${cityId}&units=metric&lang=ua&appid=${API_KEY}`);
     return dispatch({
@@ -37,7 +46,11 @@ export const getCurrentWeatherInCityByCityId = (cityId: number) => async (dispat
   }
 };
 
-export const getForecastWeatherCity = ({ lon, lat }: { lon: string, lat: string }) => async (dispatch: Dispatch<GetForecastWeatherCity>, getState: RootState, api: any) => {
+export const getForecastWeatherCity = ({ lon, lat }: { lon: string, lat: string }) => async (
+  dispatch: Dispatch<GetForecastWeatherCity>,
+  getState: RootState,
+  api: any
+) => {
   try {
     const res = await api('GET', `onecall?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`);
     return dispatch({
