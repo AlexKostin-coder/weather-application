@@ -22,6 +22,7 @@ export interface ForecastWeather {
     }
   }>,
   hourly: Array<{
+    dt: number,
     temp: number,
   }>
 }

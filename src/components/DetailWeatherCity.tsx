@@ -145,12 +145,14 @@ const DetailWeatherCity: FC = () => {
         {
           forecastWeather.hourly?.filter((item, index) => index < 16).map((item) => {
             return (
-              <Box sx={{
-                backgroundColor: '#c1c1c1',
-                px: 2,
-                // position: 'absolute',
-                top: Math.floor(item.temp),
-              }}>
+              <Box
+                key={item.dt}
+                sx={{
+                  backgroundColor: '#c1c1c1',
+                  px: 2,
+                  // position: 'absolute',
+                  top: Math.floor(item.temp),
+                }}>
                 <Typography fontSize={12}>
                   {Math.floor(item.temp)}
                 </Typography>

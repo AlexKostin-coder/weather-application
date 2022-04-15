@@ -36,6 +36,7 @@ export const initialForecastWeatherState: ForecastWeather = {
   ],
   hourly: [
     {
+      dt: 0,
       temp: 0,
     }
   ]
